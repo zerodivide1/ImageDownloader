@@ -46,14 +46,19 @@ public final class FlickrAPI {
 		if (PROPERTIES == null) {
 			PROPERTIES = new Properties();
 			
-			try {
-				PROPERTIES.load(FlickrAPI.class.getResourceAsStream("apikeys.properties"));
-			} catch (IOException e) {
-				e.printStackTrace(System.err);
-			}
+			copyProperty(PROPERTIES, "flickr.apikey");
+			copyProperty(PROPERTIES, "flickr.apisecret");
+			copyProperty(PROPERTIES, "flickr.appauthurl");
+			
 		}
 
 		return PROPERTIES;
+	}
+	
+	private static void copyProperty(Properties target, String key) {
+		if(!System.getProperties().containsKey(key))
+			throw new IllegalArgumentException(String.format("Required property not set: %s", key));
+		target.setProperty(key, System.getProperty(key));
 	}
 	
 	public static Auth getFullAuth(Flickr api, String minitoken) {
