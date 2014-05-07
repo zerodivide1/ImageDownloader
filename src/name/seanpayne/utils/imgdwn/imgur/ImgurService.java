@@ -19,10 +19,10 @@ import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurImageHandler;
  */
 public class ImgurService implements IImageService {
 	IMatchingHandler[] handlers = {
-		new ImgurAccountAlbumsHandler(),
 		new ImgurAlbumHandler(),
 		new ImgurImageHandler(),
-		new ImgurAbsoluteImageHandler()
+		new ImgurAbsoluteImageHandler(),
+		new ImgurAccountAlbumsHandler()
 	};
 	
 	@Override
