@@ -10,6 +10,7 @@ import java.io.InputStream;
 
 import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -59,9 +60,17 @@ public class ImgurImage extends AbstractImgurElement {
 	
 	@Override
 	protected void parse(JSONObject json) {
-		this.metadata = new ImgurImageMetaData(json);
-
-		this.links = new ImgurImageLinks(metadata);
+		try {
+			//XXX Very kludgy to check if the passed JSON is in the right subtree
+			if(json.has("status"))
+				this.metadata = new ImgurImageMetaData(json.getJSONObject("data"));
+			else
+				this.metadata = new ImgurImageMetaData(json);
+	
+			this.links = new ImgurImageLinks(metadata);
+		} catch (JSONException e) {
+			e.printStackTrace(System.err);
+		}
 	}
 	
 	public InputStream getImageData() throws IOException {
