@@ -11,6 +11,7 @@ import name.seanpayne.utils.imgdwn.api.IMatchingHandler;
 import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAbsoluteImageHandler;
 import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAccountAlbumsHandler;
 import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAlbumHandler;
+import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurGalleryHandler;
 import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurImageHandler;
 
 /**
@@ -19,6 +20,7 @@ import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurImageHandler;
  */
 public class ImgurService implements IImageService {
 	IMatchingHandler[] handlers = {
+		new ImgurGalleryHandler(),
 		new ImgurAlbumHandler(),
 		new ImgurImageHandler(),
 		new ImgurAbsoluteImageHandler(),

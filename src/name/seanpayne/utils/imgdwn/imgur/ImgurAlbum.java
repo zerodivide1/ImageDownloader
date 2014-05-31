@@ -37,6 +37,10 @@ public class ImgurAlbum extends AbstractImgurElement {
 		this.id = id;
 	}
 	
+	public ImgurAlbum(JSONObject json) {
+		parse(json);
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -129,7 +133,7 @@ public class ImgurAlbum extends AbstractImgurElement {
 			this.description = parseString(data, "description");
 			this.cover = parseString(data, "cover");
 			this.layout = parseString(data, "layout");
-			this.link = parseUrl(data, "url");
+			this.link = parseUrl(data, "link");
 			this.privacy = parseString(data, "privacy");
 			this.favorite = parseBoolean(data, "favorite", false);
 			this.section = parseString(data, "section");
