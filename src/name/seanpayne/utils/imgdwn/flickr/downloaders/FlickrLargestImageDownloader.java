@@ -18,10 +18,10 @@ import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotosInterface;
-import com.aetrion.flickr.photos.Size;
+import com.flickr4java.flickr.FlickrException;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.Size;
 
 /**
  * @author Sean

@@ -21,12 +21,12 @@ import name.seanpayne.utils.imgdwn.util.DirectoryUtils;
 
 import org.xml.sax.SAXException;
 
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.people.PeopleInterface;
-import com.aetrion.flickr.people.User;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
-import com.aetrion.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.FlickrException;
+import com.flickr4java.flickr.people.PeopleInterface;
+import com.flickr4java.flickr.people.User;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.PhotosInterface;
 
 /**
  * 

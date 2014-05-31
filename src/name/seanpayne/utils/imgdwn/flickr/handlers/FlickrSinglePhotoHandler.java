@@ -14,8 +14,8 @@ import name.seanpayne.utils.imgdwn.flickr.FlickrAPI;
 import name.seanpayne.utils.imgdwn.flickr.downloaders.FlickrLargestImageDownloader;
 import name.seanpayne.utils.imgdwn.flickr.utils.FlickrBase58;
 
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotosInterface;
 
 /**
  * 
