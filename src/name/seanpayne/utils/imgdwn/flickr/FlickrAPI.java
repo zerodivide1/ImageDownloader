@@ -3,9 +3,7 @@
  */
 package name.seanpayne.utils.imgdwn.flickr;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.Scanner;
 

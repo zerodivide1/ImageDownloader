@@ -52,7 +52,8 @@ public class FlickrSinglePhotoHandler implements IMatchingHandler {
 		try {
 			final Photo photo = photosInterface.getPhoto(photoId);
 			if(photo != null) {
-				threadService.execute(new FlickrLargestImageDownloader(photosInterface, photo, outputPath, null, RETRYLIMIT));
+				FlickrLargestImageDownloader downloader = new FlickrLargestImageDownloader(FlickrAPI.getAPIInstance(), photo, outputPath, null, RETRYLIMIT);
+				downloader.run();
 			}
 		} catch (Exception e) {
 			e.printStackTrace(System.err);

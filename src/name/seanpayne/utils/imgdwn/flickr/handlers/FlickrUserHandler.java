@@ -26,7 +26,6 @@ import com.flickr4java.flickr.people.PeopleInterface;
 import com.flickr4java.flickr.people.User;
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
-import com.flickr4java.flickr.photos.PhotosInterface;
 
 /**
  * 
@@ -64,7 +63,6 @@ public class FlickrUserHandler implements IMatchingHandler {
 		}
 		
 		final PeopleInterface peopleService = FlickrAPI.getAPIInstance().getPeopleInterface();
-		final PhotosInterface photosService = FlickrAPI.getAPIInstance().getPhotosInterface();
 		
 		User userInfo = null;
 		try {
@@ -88,7 +86,8 @@ public class FlickrUserHandler implements IMatchingHandler {
 		
 		for(int i=0; i < photos.size(); i++) {
 			Photo photo = (Photo)photos.get(i);
-			threadService.execute(new FlickrLargestImageDownloader(photosService, photo, outputSubdir, i, RETRYLIMIT));
+			FlickrLargestImageDownloader downloader = new FlickrLargestImageDownloader(FlickrAPI.getAPIInstance(), photo, outputSubdir, i, RETRYLIMIT);
+			downloader.run();
 		}
 		
 		writeUserInfo(userInfo, photos, outputSubdir);
@@ -122,7 +121,7 @@ public class FlickrUserHandler implements IMatchingHandler {
 		int pages = (int)Math.ceil((double)count/(double)numPerPage);
 		
 		for(int p = 0; p < pages; p++) {
-			PhotoList page = peopleInterface.getPublicPhotos(userId, numPerPage, p);
+			PhotoList<Photo> page = peopleInterface.getPublicPhotos(userId, numPerPage, p);
 			for(int i=0; i < page.size(); i++)
 				photos.add((Photo)page.get(i));
 		}

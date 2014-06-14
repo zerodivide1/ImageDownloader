@@ -24,7 +24,6 @@ import org.xml.sax.SAXException;
 import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
-import com.flickr4java.flickr.photos.PhotosInterface;
 import com.flickr4java.flickr.photosets.Photoset;
 import com.flickr4java.flickr.photosets.PhotosetsInterface;
 
@@ -61,7 +60,6 @@ public class FlickrSetHandler implements IMatchingHandler {
 		}
 		
 		final PhotosetsInterface photosetInterface = FlickrAPI.getAPIInstance().getPhotosetsInterface();
-		final PhotosInterface photosInterface = FlickrAPI.getAPIInstance().getPhotosInterface();
 		
 		Photoset photoSetInfo = null;
 		try {
@@ -84,10 +82,11 @@ public class FlickrSetHandler implements IMatchingHandler {
 			}
 			
 			File outputSubdir = DirectoryUtils.createOutputDirectory(outputPath, photosetId);
-
+			
 			for(int i=0; i < photos.size(); i++) {
 				Photo photo = (Photo)photos.get(i);
-				threadService.execute(new FlickrLargestImageDownloader(photosInterface, photo, outputSubdir, i, RETRYLIMIT));
+				FlickrLargestImageDownloader downloader = new FlickrLargestImageDownloader(FlickrAPI.getAPIInstance(), photo, outputSubdir, i, RETRYLIMIT);
+				downloader.run();
 			}
 			
 			writeSetInfo(photoSetInfo, photos, outputSubdir);
@@ -116,7 +115,7 @@ public class FlickrSetHandler implements IMatchingHandler {
 		int pages = (int)Math.ceil((double)count/(double)numPerPage);
 		
 		for(int p = 0; p < pages; p++) {
-			PhotoList setPage = photoSetsInterface.getPhotos(photosetId, numPerPage, p);
+			PhotoList<Photo> setPage = photoSetsInterface.getPhotos(photosetId, numPerPage, p);
 			for(int i=0; i < setPage.size(); i++) {
 				photos.add((Photo)setPage.get(i));
 			}

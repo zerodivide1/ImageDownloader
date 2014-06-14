@@ -18,6 +18,7 @@ import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
 import org.xml.sax.SAXException;
 
+import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotosInterface;
@@ -29,14 +30,14 @@ import com.flickr4java.flickr.photos.Size;
  */
 public class FlickrLargestImageDownloader implements Runnable {
 	private static final String EXTENSIONREGEX = "(\\.[a-zA-Z0-9]+)$";
-	private PhotosInterface photosInterface;
+	private Flickr api;
 	private Photo photo;
 	private File outputDir;
 	private Integer prefix;
 	private int retryLimit;
 	
-	public FlickrLargestImageDownloader(PhotosInterface photosInterface, Photo photo, File outputDir, Integer prefix, int retry) {
-		this.photosInterface = photosInterface;
+	public FlickrLargestImageDownloader(Flickr api, Photo photo, File outputDir, Integer prefix, int retry) {
+		this.api = api;
 		this.photo = photo;
 		this.outputDir = outputDir;
 		this.prefix = prefix;
@@ -51,7 +52,7 @@ public class FlickrLargestImageDownloader implements Runnable {
 	public void run() {
 		Size largest = null;
 		try {
-			largest = getLargest(this.photosInterface, this.photo);
+			largest = getLargest(this.photo);
 		} catch (Exception e1) {
 			e1.printStackTrace(System.err);
 			System.err.format("Unable to retrieve sizes for photo: %s\n", this.photo.getId());
@@ -89,8 +90,8 @@ public class FlickrLargestImageDownloader implements Runnable {
 		System.out.format("Completed %s\n", filename);
 	}
 
-	private Size getLargest(PhotosInterface photosService, Photo photo) throws IOException, SAXException, FlickrException {
-		Collection<Size> sizes = photosService.getSizes(photo.getId());
+	private Size getLargest(Photo photo) throws IOException, SAXException, FlickrException {
+		Collection<Size> sizes = api.getPhotosInterface().getSizes(photo.getId());
 		ArrayList<Size> sortList = new ArrayList<Size>(sizes);
 		Collections.sort(sortList, new Comparator<Size>() {
 			@Override
