@@ -4,8 +4,13 @@ import java.net.URL;
 
 public class GfyItem {
 	public enum Type {
-		GIF,
-		MP4
+		GIF("gif"),
+		MP4("mp4");
+		
+		public String ext;
+		private Type(String ext) {
+			this.ext = ext;
+		}
 	};
 	
 	private String name;

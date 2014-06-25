@@ -1,17 +1,9 @@
 package name.seanpayne.utils.imgdwn.gfycat;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
+import java.io.FileOutputStream;
 
-import name.seanpayne.utils.imgdwn.json.JSONReader;
-import name.seanpayne.utils.imgdwn.json.JSONUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.common.collect.ImmutableList;
+import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
 public class GfycatDownloader implements Runnable {
 	
@@ -27,11 +19,39 @@ public class GfycatDownloader implements Runnable {
 
 	@Override
 	public void run() {
-		//TODO Generate filename
+		final String fileOutputName = createOutputFilename(item);
 		
-		//TODO Download item
+		final File outputFile = new File(outputDirectory, fileOutputName);
+		if(outputFile.exists()) {
+			System.out.format("File \"%s\" already exists. Skipping.\n", fileOutputName);
+			return;
+		}
+		
+		for(int i=0; i < retryLimit; i++) {
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(outputFile);
+				
+				if(HTTPUtils.downloadFile(item.getUrl(), fos))
+					break;
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+				System.err.format("Error while downloading \"%s\". Retrying...\n", item.getUrl().toString());
+			} finally {
+				try {
+					if(fos != null)
+						fos.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		
+		System.out.format("Completed %s\n", fileOutputName);
 	}
 	
-	
+	protected String createOutputFilename(GfyItem item) {
+		return String.format("%s.%s", item.getName().trim(), item.getType().ext);
+	}
 
 }
