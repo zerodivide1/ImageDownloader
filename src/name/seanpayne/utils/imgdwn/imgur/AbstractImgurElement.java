@@ -40,7 +40,7 @@ public abstract class AbstractImgurElement extends BaseImgurElement {
 	
 	protected void refresh(String apiMethod, String id) {
 		final String imgurAPI = "https://api.imgur.com/3";
-		String fullURL = String.format("%s/%s/%s.%s", imgurAPI, apiMethod, id, "json");
+		String fullURL = String.format("%s/%s/%s", imgurAPI, apiMethod, id);
 		URL url;
 		try {
 			url = new URL(fullURL);
