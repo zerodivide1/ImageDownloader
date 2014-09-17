@@ -7,9 +7,17 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
 /**
@@ -17,13 +25,14 @@ import com.google.common.io.ByteStreams;
  *
  */
 public final class HTTPUtils {
-
-	public static boolean downloadFile(URL url, OutputStream outStream) throws IOException {
-		URLConnection conn = null;
+	
+	public static boolean downloadFile(URL url, OutputStream outStream, Map<String, String> headers) throws IOException {
+		HttpURLConnection conn = null;
 		InputStream is = null;
 		BufferedInputStream bis = null;
 		try {
-			conn = url.openConnection();
+			conn = (HttpURLConnection)url.openConnection();
+			HTTPUtils.applyHeaders(conn, headers);
 			long len = conn.getContentLength();
 			
 			is = conn.getInputStream();
@@ -48,4 +57,16 @@ public final class HTTPUtils {
 			}
 		}
 	}
+
+	public static boolean downloadFile(URL url, OutputStream outStream) throws IOException {
+		Map<String, String> m = ImmutableMap.of();
+		return downloadFile(url, outStream, m);
+	}
+	
+	public static void applyHeaders(HttpURLConnection connection, Map<String, String> headers) {
+		for (Map.Entry<String, String> entry : headers.entrySet()) {
+			connection.setRequestProperty(entry.getKey(), entry.getValue());
+		}
+	}
+
 }

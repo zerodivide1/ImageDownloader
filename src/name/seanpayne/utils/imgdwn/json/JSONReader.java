@@ -13,6 +13,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import name.seanpayne.utils.imgdwn.util.HTTPUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +42,7 @@ public class JSONReader {
 	public static JSONObject readJsonFromUrl(URL url, Map<String, String> headers) throws IOException, JSONException {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		try {
-			applyHeaders(conn, headers);
+			HTTPUtils.applyHeaders(conn, headers);
 			
 			int responseCode = conn.getResponseCode();
 			InputStream is = null;
@@ -72,10 +74,6 @@ public class JSONReader {
 		return json;
 	}
 	
-	private static void applyHeaders(HttpURLConnection connection, Map<String, String> headers) {
-		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			connection.setRequestProperty(entry.getKey(), entry.getValue());
-		}
-	}
+	
 
 }
