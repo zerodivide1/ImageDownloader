@@ -1,6 +1,8 @@
 package name.seanpayne.utils.imgdwn.imgur.handlers;
 
 import name.seanpayne.utils.imgdwn.api.IMatchingHandler;
+import name.seanpayne.utils.imgdwn.imgur.ImgurImage;
+import name.seanpayne.utils.imgdwn.imgur.downloaders.ImgurImageDownloader;
 
 import java.io.File;
 import java.net.URL;
@@ -27,7 +29,9 @@ public class ImgurGifvImageHandler implements IMatchingHandler {
         Matcher m = imageUrlPattern.matcher(url.toString());
         if(m.matches()) {
             final String imageHash = m.group(IMAGEURLGROUP);
-            //TODO
+
+            ImgurImage image = new ImgurImage(imageHash);
+            threadService.execute(new ImgurImageDownloader(image, outputPath, null, RETRYLIMIT));
         }
     }
 }
