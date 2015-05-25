@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  */
 public class ImgurGifvImageHandler implements IMatchingHandler {
-    private static final String IMGURIMAGEURLABSOLUTE = "(https?:\\/\\/)?i.imgur\\.com\\/(([a-zA-Z0-9]+)\\.gifv)";
+    private static final String IMGURIMAGEURLABSOLUTE = "(https?:\\/\\/)?i.imgur\\.com\\/(([a-zA-Z0-9]+)\\.gifv?)";
     private static final int IMAGEURLGROUP = 3;
     private static final int RETRYLIMIT = 2;
     private final Pattern imageUrlPattern = Pattern.compile(IMGURIMAGEURLABSOLUTE);
