@@ -21,6 +21,7 @@ public class ImgurImageLinks extends BaseImgurElement {
 	URL imgur_page;
 	URL small_square;
 	URL large_thumbnail;
+    URL animatedVideo;
 	
 	public ImgurImageLinks(ImgurImageMetaData metadata) {
 		parse(metadata);
@@ -42,6 +43,9 @@ public class ImgurImageLinks extends BaseImgurElement {
 		return large_thumbnail;
 	}
 
+    public URL getAnimatedVideo() {
+        return animatedVideo;
+    }
 
 
 	@Override
@@ -78,6 +82,22 @@ public class ImgurImageLinks extends BaseImgurElement {
 		} catch (MalformedURLException e) {
 			e.printStackTrace(System.err);
 		}
+
+        this.animatedVideo = Optional
+                .fromNullable(metadata.getMp4())
+                .or(Optional.fromNullable(metadata.getWebm()))
+                .transform(new Function<URL, URL>() {
+                    @Override
+                    public URL apply(URL input) {
+                        try {
+                            return new URL(input.getProtocol(), input.getHost(), input.getFile());
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace(System.err);
+                            return null;
+                        }
+                    }
+                })
+                .orNull();
 	}
 	
 	private String reformatFilename(String name, String suffix) {
