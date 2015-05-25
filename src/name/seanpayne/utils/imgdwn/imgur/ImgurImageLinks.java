@@ -6,6 +6,8 @@ package name.seanpayne.utils.imgdwn.imgur;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import org.json.JSONObject;
 
 import com.google.common.io.Files;
@@ -54,6 +56,23 @@ public class ImgurImageLinks extends BaseImgurElement {
 		
 		try {
 			this.original = new URL(link.getProtocol(), link.getHost(), link.getFile());
+            if(metadata.isAnimated()) {
+                this.original = Optional
+                        .fromNullable(metadata.getMp4())
+                        .or(Optional.fromNullable(metadata.getWebm()))
+                        .transform(new Function<URL, URL>() {
+                            @Override
+                            public URL apply(URL input) {
+                                try {
+                                    return new URL(input.getProtocol(), input.getHost(), input.getFile());
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace(System.err);
+                                    return null;
+                                }
+                            }
+                        })
+                        .or(this.original);
+            }
 		} catch (MalformedURLException e) {
 			e.printStackTrace(System.err);
 		}
