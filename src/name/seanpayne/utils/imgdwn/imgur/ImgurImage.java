@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.google.common.base.Optional;
 import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
 import org.json.JSONException;
@@ -98,16 +99,20 @@ public class ImgurImage extends AbstractImgurElement {
 
     protected URL getDownloadUrl() {
         URL url = getLinks().getOriginal();
-        if(getMetadata().isAnimated()) {
-            if(getMetadata().getMp4() != null) {
-                try {
-                    url = new URL(getMetadata().getMp4().getProtocol(), getMetadata().getMp4().getHost(), getMetadata().getMp4().getFile());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace(System.err);
-                }
+        try {
+            if (getMetadata().isAnimated()) {
+                url = duplicateURL(Optional.fromNullable(getMetadata().getMp4())
+                        .or(Optional.fromNullable(getMetadata().getWebm()))
+                        .or(getLinks().getOriginal()));
             }
+        } catch (MalformedURLException e) {
+            e.printStackTrace(System.err);
         }
 
         return url;
+    }
+
+    private URL duplicateURL(URL url) throws MalformedURLException {
+        return new URL(url.getProtocol(), url.getHost(), url.getFile());
     }
 }
