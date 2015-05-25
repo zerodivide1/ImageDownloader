@@ -7,8 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.google.common.base.Optional;
 import name.seanpayne.utils.imgdwn.util.HTTPUtils;
@@ -84,8 +82,8 @@ public class ImgurImage extends AbstractImgurElement {
 			}
 			
 			ByteArrayOutputStream bos = new ByteArrayOutputStream((int)size);
-
-			if(HTTPUtils.downloadFile(getDownloadUrl(), bos)) {
+			
+			if(HTTPUtils.downloadFile(getLinks().getOriginal(), bos)) {
 				imageData = bos.toByteArray();
 			}
 		}
@@ -96,23 +94,4 @@ public class ImgurImage extends AbstractImgurElement {
 	public void clearImageData() {
 		imageData = null;
 	}
-
-    protected URL getDownloadUrl() {
-        URL url = getLinks().getOriginal();
-        try {
-            if (getMetadata().isAnimated()) {
-                url = duplicateURL(Optional.fromNullable(getMetadata().getMp4())
-                        .or(Optional.fromNullable(getMetadata().getWebm()))
-                        .or(getLinks().getOriginal()));
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace(System.err);
-        }
-
-        return url;
-    }
-
-    private URL duplicateURL(URL url) throws MalformedURLException {
-        return new URL(url.getProtocol(), url.getHost(), url.getFile());
-    }
 }
