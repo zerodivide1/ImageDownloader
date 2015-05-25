@@ -7,7 +7,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import name.seanpayne.utils.imgdwn.util.HTTPUtils;
 
@@ -26,6 +28,7 @@ public class ImgurImage extends AbstractImgurElement {
 	ImgurImageMetaData metadata;
 	ImgurImageLinks links;
 	byte[] imageData;
+    byte[] animatedImageData;
 	
 	public ImgurImage(String hash) {
 		this.hash = hash;
@@ -81,11 +84,7 @@ public class ImgurImage extends AbstractImgurElement {
 				size = getMetadata().getSize();
 			}
 			
-			ByteArrayOutputStream bos = new ByteArrayOutputStream((int)size);
-			
-			if(HTTPUtils.downloadFile(getLinks().getOriginal(), bos)) {
-				imageData = bos.toByteArray();
-			}
+			imageData = downloadData(getLinks().getOriginal(), (int)Math.max(size, 1024*1024*32));
 		}
 
 		return new ByteArrayInputStream(imageData);
@@ -94,4 +93,27 @@ public class ImgurImage extends AbstractImgurElement {
 	public void clearImageData() {
 		imageData = null;
 	}
+
+    private byte[] downloadData(URL url, int bufferSize) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
+
+        if(HTTPUtils.downloadFile(url, bos)) {
+            return bos.toByteArray();
+        }
+        return null;
+    }
+
+    public InputStream getAnimatedImageData() throws IOException {
+        if (animatedImageData == null) {
+            final int bufferSize = 1024*1024*10; //10MB Buffer
+
+            animatedImageData = downloadData(getLinks().getAnimatedVideo(), bufferSize);
+        }
+
+        return new ByteArrayInputStream(animatedImageData);
+    }
+
+    public void clearAnimatedImageData() {
+        this.animatedImageData = null;
+    }
 }
