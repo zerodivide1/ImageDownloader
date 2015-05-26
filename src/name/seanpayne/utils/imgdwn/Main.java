@@ -15,7 +15,6 @@ import name.seanpayne.utils.imgdwn.api.IDownloadHandler;
 import name.seanpayne.utils.imgdwn.api.IImageService;
 import name.seanpayne.utils.imgdwn.defaults.DefaultDownloadHandler;
 import name.seanpayne.utils.imgdwn.flickr.FlickrService;
-import name.seanpayne.utils.imgdwn.gfycat.GfycatService;
 import name.seanpayne.utils.imgdwn.imgly.ImglyService;
 import name.seanpayne.utils.imgdwn.imgur.ImgurService;
 
@@ -52,7 +51,6 @@ public class Main implements Runnable{
 		services.add(new ImgurService());
 		services.add(new FlickrService());
 		services.add(new ImglyService());
-		services.add(new GfycatService());
 	}
 	
 	public void configure(String[] args, PrintStream errorOutput, PrintStream standardOutput) throws IllegalArgumentException {
