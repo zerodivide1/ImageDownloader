@@ -8,12 +8,7 @@ import java.net.URL;
 import name.seanpayne.utils.imgdwn.api.IDownloadHandler;
 import name.seanpayne.utils.imgdwn.api.IImageService;
 import name.seanpayne.utils.imgdwn.api.IMatchingHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAbsoluteImageHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAccountAlbumsHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurAlbumHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurGalleryHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurImageHandler;
-import name.seanpayne.utils.imgdwn.imgur.handlers.ImgurMultiImageHandler;
+import name.seanpayne.utils.imgdwn.imgur.handlers.*;
 
 /**
  * @author Sean
@@ -25,6 +20,7 @@ public class ImgurService implements IImageService {
 		new ImgurAlbumHandler(),
 		new ImgurImageHandler(),
 		new ImgurMultiImageHandler(),
+        new ImgurGifvImageHandler(),
 		new ImgurAbsoluteImageHandler(),
 		new ImgurAccountAlbumsHandler()
 	};
