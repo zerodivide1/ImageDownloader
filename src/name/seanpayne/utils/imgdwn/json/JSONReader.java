@@ -56,10 +56,21 @@ public class JSONReader {
 						}
 					default:
 						is = conn.getErrorStream();
-						throw new IllegalStateException(String.format("Unable to download URL \"%s\". Response code = %d Reason:\n%s", url.toString(), responseCode, readAll(new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8"))))));
+						if(is == null) {
+							is = conn.getInputStream();
+						}
+						if(is == null) {
+							throw new IllegalStateException(String.format("Unable to download URL \"%s\". Response code = %d Reason: Unknown (No data)", url.toString(), responseCode));
+						} else {
+							throw new IllegalStateException(String.format("Unable to download URL \"%s\". Response code = %d Reason:\n%s", url.toString(), responseCode, readAll(new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8"))))));
+						}
 				}
 			} finally {
-				is.close();
+				if(is != null) {
+					is.close();
+				} else {
+					System.err.format("Error: JSONReader#readJsonFromUrl InputStream is null; responseCode is %d", responseCode);
+				}
 			}
 		} finally {
 			conn.disconnect();
