@@ -20,12 +20,18 @@ import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
+
 /**
  * @author Sean
  * Modified from: http://stackoverflow.com/a/4308662
  * 
  */
 public class JSONReader {
+	private static final int REDIRECT_THRESHOLD = 5;
+
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -38,8 +44,15 @@ public class JSONReader {
 	public static JSONObject readJsonFromUrl(URL url) throws IOException, JSONException {
 		return readJsonFromUrl(url, ImmutableMap.<String,String>of());
 	}
-	
+
 	public static JSONObject readJsonFromUrl(URL url, Map<String, String> headers) throws IOException, JSONException {
+		return readJsonFromUrl(url, url, headers, 0);
+	}
+	
+	private static JSONObject readJsonFromUrl(URL originalUrl, URL url, Map<String, String> headers, int redirectCount) throws IOException, JSONException {
+		if(redirectCount > REDIRECT_THRESHOLD) {
+			throw new IllegalStateException(String.format("Unable to download URL \"%s\" - too many redirects.", originalUrl.toString()));
+		}
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		try {
 			HTTPUtils.applyHeaders(conn, headers);
@@ -48,11 +61,19 @@ public class JSONReader {
 			InputStream is = null;
 			try {
 				switch(responseCode) {
-					case 200: //OK
+					case HTTP_OK: //OK
 						{
 							is =  conn.getInputStream();
 							JSONObject json = readFromStream(is);
 							return json;
+						}
+					case HTTP_MOVED_PERM: //Permanent redirect
+					case HTTP_MOVED_TEMP: //Temporary redirect
+						{
+							final String redirectLocation = conn.getHeaderField("Location");
+							System.err.format("URL \"%s\" redirecting to \"%s\" (%d)\n", url.toString(), redirectLocation, redirectCount+1);
+
+							return readJsonFromUrl(originalUrl, new URL(redirectLocation), headers, redirectCount+1);
 						}
 					default:
 						is = conn.getErrorStream();
@@ -69,7 +90,7 @@ public class JSONReader {
 				if(is != null) {
 					is.close();
 				} else {
-					System.err.format("Error: JSONReader#readJsonFromUrl InputStream is null; responseCode is %d", responseCode);
+					System.err.format("Error: JSONReader#readJsonFromUrl InputStream is null; responseCode is %d\n", responseCode);
 				}
 			}
 		} finally {
